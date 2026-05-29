@@ -1,0 +1,2004 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎓 Курс обучения оператора SunLife</title>
+<style>
+  :root {
+    --primary: #1a73e8;
+    --primary-dark: #1557b0;
+    --secondary: #ff6b35;
+    --accent: #00c9a7;
+    --bg-dark: #0d1b2a;
+    --bg-card: #1a2a3e;
+    --bg-card2: #162032;
+    --text-light: #e8f0fe;
+    --text-muted: #8aa3c0;
+    --gold: #ffd700;
+    --success: #00e676;
+    --warning: #ffab40;
+    --danger: #ff5252;
+    --purple: #9c27b0;
+    --shadow: 0 8px 32px rgba(0,0,0,0.4);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-light);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  #particles {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 0; overflow: hidden;
+  }
+  .particle {
+    position: absolute; border-radius: 50%;
+    background: radial-gradient(circle, rgba(26,115,232,0.4), transparent);
+    animation: float linear infinite;
+  }
+  @keyframes float {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
+  }
+
+  #app { position: relative; z-index: 1; min-height: 100vh; }
+
+  #welcome-screen {
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, #0d1b2a 0%, #1a2a4a 50%, #0d1b2a 100%);
+  }
+
+  .welcome-logo {
+    width: 120px; height: 120px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 50px; margin: 0 auto 30px;
+    box-shadow: 0 0 60px rgba(26,115,232,0.5);
+    animation: pulse 3s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { box-shadow: 0 0 40px rgba(26,115,232,0.4); transform: scale(1); }
+    50% { box-shadow: 0 0 80px rgba(26,115,232,0.7); transform: scale(1.05); }
+  }
+
+  .welcome-title {
+    font-size: clamp(28px,5vw,52px); font-weight: 900;
+    background: linear-gradient(135deg, #fff 0%, var(--accent) 50%, var(--primary) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text; margin-bottom: 10px; line-height: 1.1;
+  }
+
+  .welcome-subtitle {
+    font-size: clamp(14px,2.5vw,20px); color: var(--text-muted);
+    margin-bottom: 15px; font-weight: 400;
+  }
+
+  .welcome-company {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--secondary), var(--gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text; font-size: clamp(20px,4vw,36px);
+    font-weight: 800; margin-bottom: 40px; letter-spacing: 2px;
+  }
+
+  .welcome-features {
+    display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;
+    margin-bottom: 50px; max-width: 800px;
+  }
+  .welcome-feat {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius-sm); padding: 15px 20px;
+    display: flex; align-items: center; gap: 10px;
+    backdrop-filter: blur(10px); font-size: 14px; color: var(--text-muted);
+    transition: all 0.3s;
+  }
+  .welcome-feat:hover { background: rgba(26,115,232,0.2); color: #fff; transform: translateY(-3px); }
+  .welcome-feat .icon { font-size: 24px; }
+
+  .btn-start {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white; border: none; padding: 20px 60px;
+    border-radius: 50px; font-size: 20px; font-weight: 700;
+    cursor: pointer; transition: all 0.3s; letter-spacing: 1px;
+    box-shadow: 0 8px 30px rgba(26,115,232,0.5);
+    position: relative; overflow: hidden;
+  }
+  .btn-start::before {
+    content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+  .btn-start:hover::before { left: 100%; }
+  .btn-start:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(26,115,232,0.6); }
+
+  #course-layout {
+    display: none; min-height: 100vh;
+    grid-template-columns: 300px 1fr;
+    grid-template-rows: auto 1fr;
+  }
+  #course-layout.active { display: grid; }
+
+  #course-header {
+    grid-column: 1/-1;
+    background: linear-gradient(90deg, var(--bg-card2), var(--bg-card));
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 15px 30px; display: flex; align-items: center; gap: 20px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .header-logo { font-size: 24px; font-weight: 900; color: #fff; letter-spacing: 1px; }
+  .header-logo span { color: var(--accent); }
+  .header-progress-wrap { flex: 1; }
+  .header-progress-label { font-size: 12px; color: var(--text-muted); margin-bottom: 5px; }
+  .header-progress-bar {
+    height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;
+  }
+  .header-progress-fill {
+    height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent));
+    border-radius: 4px; transition: width 0.5s ease; width: 0%;
+  }
+  .header-stats { display: flex; gap: 20px; }
+  .stat-item { text-align: center; }
+  .stat-num { font-size: 20px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 11px; color: var(--text-muted); }
+
+  #sidebar {
+    background: var(--bg-card2); border-right: 1px solid rgba(255,255,255,0.06);
+    padding: 20px 0; overflow-y: auto; height: calc(100vh - 70px);
+    position: sticky; top: 70px;
+  }
+  .sidebar-title {
+    font-size: 11px; font-weight: 700; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 2px; padding: 0 20px 15px;
+  }
+
+  .step-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 20px; cursor: pointer; transition: all 0.2s;
+    border-left: 3px solid transparent; position: relative;
+  }
+  .step-item:hover { background: rgba(255,255,255,0.05); }
+  .step-item.active { background: rgba(26,115,232,0.15); border-left-color: var(--primary); }
+  .step-item.completed { border-left-color: var(--accent); }
+
+  .step-num {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(255,255,255,0.08); display: flex; align-items: center;
+    justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0;
+    transition: all 0.3s;
+  }
+  .step-item.active .step-num { background: var(--primary); color: #fff; }
+  .step-item.completed .step-num { background: var(--accent); color: #fff; }
+
+  .step-info { flex: 1; min-width: 0; }
+  .step-name { font-size: 12px; font-weight: 600; color: var(--text-light); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .step-status { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .step-check { font-size: 16px; }
+
+  #content { padding: 40px; overflow-y: auto; max-width: 900px; }
+
+  .stage { display: none; animation: fadeIn 0.4s ease; }
+  .stage.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+  .stage-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(26,115,232,0.2); border: 1px solid rgba(26,115,232,0.4);
+    color: var(--primary); padding: 6px 16px; border-radius: 20px;
+    font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 15px;
+  }
+  .stage-title {
+    font-size: clamp(22px,4vw,34px); font-weight: 900; margin-bottom: 10px; line-height: 1.2;
+    background: linear-gradient(135deg, #fff, var(--text-muted));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .stage-desc { font-size: 15px; color: var(--text-muted); line-height: 1.6; margin-bottom: 30px; }
+
+  .card {
+    background: var(--bg-card); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: var(--radius); padding: 24px; margin-bottom: 20px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .card:hover { border-color: rgba(26,115,232,0.3); box-shadow: var(--shadow); }
+  .card-title { font-size: 16px; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+  .card-icon { font-size: 22px; }
+
+  .info-box {
+    background: rgba(26,115,232,0.1); border: 1px solid rgba(26,115,232,0.3);
+    border-radius: var(--radius-sm); padding: 16px 20px; margin: 15px 0;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .info-box.warning { background: rgba(255,171,64,0.1); border-color: rgba(255,171,64,0.3); }
+  .info-box.success { background: rgba(0,230,118,0.1); border-color: rgba(0,230,118,0.3); }
+  .info-box.danger { background: rgba(255,82,82,0.1); border-color: rgba(255,82,82,0.3); }
+  .info-box .icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+  .info-box p { font-size: 14px; color: var(--text-light); line-height: 1.6; }
+
+  .schedule-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 15px 0; }
+  .schedule-card {
+    background: linear-gradient(135deg, rgba(26,115,232,0.2), rgba(0,201,167,0.2));
+    border: 1px solid rgba(26,115,232,0.3); border-radius: var(--radius-sm);
+    padding: 20px; text-align: center; transition: all 0.3s;
+  }
+  .schedule-card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(26,115,232,0.3); }
+  .schedule-day { font-size: 24px; margin-bottom: 8px; }
+  .schedule-name { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 5px; }
+  .schedule-time { font-size: 22px; font-weight: 900; color: var(--accent); }
+
+  .flip-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin: 15px 0; }
+  .flip-card { height: 160px; perspective: 1000px; cursor: pointer; }
+  .flip-card-inner {
+    width: 100%; height: 100%; transition: transform 0.6s;
+    transform-style: preserve-3d; position: relative;
+  }
+  .flip-card:hover .flip-card-inner,
+  .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+  .flip-front, .flip-back {
+    position: absolute; width: 100%; height: 100%;
+    backface-visibility: hidden; border-radius: var(--radius-sm);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 15px; text-align: center;
+  }
+  .flip-front {
+    background: linear-gradient(135deg, var(--bg-card), rgba(26,115,232,0.2));
+    border: 1px solid rgba(26,115,232,0.3);
+  }
+  .flip-back {
+    background: linear-gradient(135deg, rgba(0,201,167,0.3), rgba(26,115,232,0.3));
+    border: 1px solid rgba(0,201,167,0.4); transform: rotateY(180deg);
+  }
+  .flip-front-icon { font-size: 36px; margin-bottom: 10px; }
+  .flip-front-text { font-size: 13px; font-weight: 700; color: var(--text-light); }
+  .flip-back-text { font-size: 12px; color: var(--text-light); line-height: 1.5; }
+  .flip-hint { font-size: 10px; color: var(--text-muted); margin-top: 6px; }
+
+  .accordion { margin: 15px 0; }
+  .accordion-item { margin-bottom: 8px; }
+  .accordion-header {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius-sm); padding: 14px 18px;
+    cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+    transition: all 0.2s; font-weight: 600; font-size: 14px;
+  }
+  .accordion-header:hover { background: rgba(26,115,232,0.15); border-color: rgba(26,115,232,0.3); }
+  .accordion-header.open { background: rgba(26,115,232,0.2); border-color: rgba(26,115,232,0.4); color: #fff; border-radius: var(--radius-sm) var(--radius-sm) 0 0; }
+  .accordion-arrow { transition: transform 0.3s; font-size: 12px; }
+  .accordion-header.open .accordion-arrow { transform: rotate(180deg); }
+  .accordion-body {
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+    border-top: none; border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    padding: 0; max-height: 0; overflow: hidden; transition: all 0.4s ease;
+  }
+  .accordion-body.open { max-height: 3000px; padding: 16px 18px; }
+  .accordion-body p, .accordion-body li { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+  .accordion-body ul, .accordion-body ol { padding-left: 20px; }
+  .accordion-body li { margin-bottom: 6px; }
+
+  .steps-list { counter-reset: step-counter; }
+  .step-row {
+    display: flex; gap: 16px; align-items: flex-start;
+    padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .step-row:last-child { border-bottom: none; }
+  .step-circle {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 16px; flex-shrink: 0;
+    box-shadow: 0 4px 15px rgba(26,115,232,0.4);
+  }
+  .step-content { flex: 1; }
+  .step-content h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+  .step-content p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+  .step-content ul { font-size: 13px; color: var(--text-muted); padding-left: 18px; line-height: 1.7; }
+
+  .screenshot-wrap {
+    margin: 15px 0; border-radius: var(--radius-sm); overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3);
+  }
+  .screenshot-label {
+    background: rgba(255,255,255,0.05); padding: 8px 14px;
+    font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .screenshot-wrap img {
+    width: 100%; display: block; transition: transform 0.3s;
+  }
+  .screenshot-wrap img:hover { transform: scale(1.01); }
+  .screenshot-fallback {
+    display: none; padding: 20px; justify-content: center;
+    align-items: center; flex-direction: column; gap: 10px;
+    color: var(--text-muted); font-size: 13px;
+  }
+
+  /* ===== ВИДЕО-БЛОК GOOGLE DRIVE ===== */
+  .video-wrap {
+    margin: 20px 0; border-radius: var(--radius); overflow: hidden;
+    border: 2px solid rgba(26,115,232,0.4); background: #000;
+    box-shadow: 0 8px 30px rgba(26,115,232,0.2);
+  }
+  .video-label {
+    background: linear-gradient(90deg, rgba(26,115,232,0.3), rgba(0,201,167,0.3));
+    padding: 10px 16px; font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid rgba(26,115,232,0.3); color: var(--text-light);
+  }
+  .video-label .dot { width: 8px; height: 8px; background: #ff5252; border-radius: 50%; animation: blink 1.5s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .video-frame-wrap {
+    position: relative; width: 100%; padding-bottom: 56.25%; /* 16:9 */
+    background: #000;
+  }
+  .video-frame-wrap iframe {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    border: none;
+  }
+  .video-note {
+    background: rgba(0,0,0,0.4); padding: 10px 16px;
+    font-size: 12px; color: var(--text-muted);
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .video-note a {
+    color: var(--primary); text-decoration: none; font-weight: 600;
+    white-space: nowrap;
+    transition: color 0.2s;
+  }
+  .video-note a:hover { color: var(--accent); }
+
+  .btn-video {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white; border: none; padding: 10px 20px;
+    border-radius: 25px; font-size: 13px; font-weight: 600;
+    cursor: pointer; text-decoration: none; transition: all 0.3s;
+  }
+  .btn-video:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(26,115,232,0.4); }
+
+  .custom-table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 13px; }
+  .custom-table th {
+    background: linear-gradient(135deg, rgba(26,115,232,0.3), rgba(0,201,167,0.3));
+    color: #fff; font-weight: 700; padding: 12px 14px; text-align: left;
+    font-size: 12px; text-transform: uppercase; letter-spacing: 1px;
+  }
+  .custom-table td { padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.06); color: var(--text-light); vertical-align: top; }
+  .custom-table tr:hover td { background: rgba(255,255,255,0.03); }
+
+  .checklist { list-style: none; margin: 15px 0; }
+  .checklist li {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 14px; color: var(--text-muted); line-height: 1.5; cursor: pointer;
+    transition: color 0.2s;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li.done { color: var(--success); }
+  .checklist li .check-icon {
+    width: 22px; height: 22px; border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 6px; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 12px; transition: all 0.3s; margin-top: 1px;
+  }
+  .checklist li.done .check-icon { background: var(--success); border-color: var(--success); color: #000; }
+
+  .task-checklist { margin: 20px 0; }
+  .task-title { font-size: 14px; font-weight: 700; color: var(--gold); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .task-item {
+    display: flex; align-items: center; gap: 12px; padding: 10px 14px;
+    background: rgba(255,255,255,0.03); border-radius: var(--radius-sm);
+    margin-bottom: 8px; cursor: pointer; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.06);
+  }
+  .task-item:hover { background: rgba(26,115,232,0.1); border-color: rgba(26,115,232,0.3); }
+  .task-item.done { background: rgba(0,230,118,0.08); border-color: rgba(0,230,118,0.25); }
+  .task-checkbox {
+    width: 20px; height: 20px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    font-size: 11px; transition: all 0.3s;
+  }
+  .task-item.done .task-checkbox { background: var(--success); border-color: var(--success); color: #000; }
+  .task-text { font-size: 13px; color: var(--text-muted); flex: 1; transition: color 0.2s; }
+  .task-item.done .task-text { color: var(--success); text-decoration: line-through; }
+
+  .funnel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; margin: 15px 0; }
+  .funnel-card {
+    background: var(--bg-card); border-radius: var(--radius-sm);
+    padding: 18px; border-left: 4px solid transparent; transition: all 0.3s;
+    cursor: pointer;
+  }
+  .funnel-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+  .funnel-card.blue { border-left-color: var(--primary); }
+  .funnel-card.yellow { border-left-color: var(--warning); }
+  .funnel-card.orange { border-left-color: var(--secondary); }
+  .funnel-card.green { border-left-color: var(--success); }
+  .funnel-card.red { border-left-color: var(--danger); }
+  .funnel-card-title { font-size: 14px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .funnel-card-body { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+
+  .stage-progress {
+    background: var(--bg-card); border-radius: var(--radius-sm); padding: 16px 20px;
+    margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.07);
+  }
+  .stage-progress-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .stage-progress-label { font-size: 13px; font-weight: 600; color: var(--text-muted); }
+  .stage-progress-count { font-size: 13px; font-weight: 700; color: var(--accent); }
+  .progress-bar { height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
+  .progress-fill {
+    height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent));
+    border-radius: 3px; transition: width 0.5s ease;
+  }
+
+  .mini-map { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 25px; }
+  .mini-dot {
+    width: 30px; height: 8px; border-radius: 4px;
+    background: rgba(255,255,255,0.1); transition: all 0.3s;
+    cursor: pointer; position: relative;
+  }
+  .mini-dot.active { background: var(--primary); }
+  .mini-dot.completed { background: var(--accent); }
+  .mini-dot:hover::after {
+    content: attr(data-label); position: absolute; bottom: 14px; left: 50%;
+    transform: translateX(-50%); background: rgba(0,0,0,0.8); color: #fff;
+    font-size: 10px; padding: 3px 8px; border-radius: 4px; white-space: nowrap; z-index: 10;
+  }
+
+  .btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.06); }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white; border: none; padding: 14px 28px;
+    border-radius: 12px; font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 8px;
+    box-shadow: 0 4px 15px rgba(26,115,232,0.4); text-decoration: none;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(26,115,232,0.5); }
+
+  .btn-success {
+    background: linear-gradient(135deg, var(--success), #00b34a);
+    color: #000; border: none; padding: 14px 28px;
+    border-radius: 12px; font-size: 14px; font-weight: 800;
+    cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 8px;
+    box-shadow: 0 4px 15px rgba(0,230,118,0.3);
+  }
+  .btn-success:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,230,118,0.4); }
+
+  .btn-secondary {
+    background: rgba(255,255,255,0.05); color: var(--text-light);
+    border: 1px solid rgba(255,255,255,0.15); padding: 14px 28px;
+    border-radius: 12px; font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 8px;
+  }
+  .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+  a.link {
+    color: var(--primary); text-decoration: none; border-bottom: 1px dashed rgba(26,115,232,0.5);
+    transition: border-color 0.2s;
+  }
+  a.link:hover { border-color: var(--primary); }
+
+  #completion-popup {
+    display: none; position: fixed; inset: 0; z-index: 1000;
+    background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
+    align-items: center; justify-content: center;
+  }
+  #completion-popup.show { display: flex; }
+  .popup-box {
+    background: linear-gradient(135deg, var(--bg-card), rgba(26,115,232,0.2));
+    border: 2px solid rgba(26,115,232,0.5); border-radius: 24px;
+    padding: 50px; text-align: center; max-width: 480px; width: 90%;
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  @keyframes popIn {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .popup-emoji { font-size: 70px; margin-bottom: 20px; }
+  .popup-title { font-size: 28px; font-weight: 900; color: #fff; margin-bottom: 10px; }
+  .popup-text { color: var(--text-muted); font-size: 15px; margin-bottom: 30px; line-height: 1.6; }
+
+  #final-screen {
+    display: none; min-height: 100vh; align-items: center; justify-content: center;
+    flex-direction: column; text-align: center; padding: 40px;
+    background: linear-gradient(135deg, #0d1b2a, #1a2a4a);
+  }
+  #final-screen.show { display: flex; }
+  .final-trophy { font-size: 100px; margin-bottom: 30px; animation: bounce 2s infinite; }
+  @keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+  }
+  .final-title {
+    font-size: clamp(28px,5vw,48px); font-weight: 900; margin-bottom: 15px;
+    background: linear-gradient(135deg, var(--gold), var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; margin: 15px 0; }
+  .quiz-option {
+    background: rgba(255,255,255,0.04); border: 2px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius-sm); padding: 14px 18px; cursor: pointer;
+    font-size: 14px; color: var(--text-muted); transition: all 0.25s;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .quiz-option:hover { background: rgba(26,115,232,0.1); border-color: rgba(26,115,232,0.4); color: #fff; }
+  .quiz-option.correct { background: rgba(0,230,118,0.15); border-color: var(--success); color: var(--success); }
+  .quiz-option.wrong { background: rgba(255,82,82,0.15); border-color: var(--danger); color: var(--danger); }
+  .quiz-option.disabled { pointer-events: none; opacity: 0.5; }
+  .quiz-option.disabled.correct { opacity: 1; }
+  .quiz-result { margin-top: 15px; padding: 12px 16px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; display: none; }
+  .quiz-result.show { display: block; }
+  .quiz-result.ok { background: rgba(0,230,118,0.15); border: 1px solid rgba(0,230,118,0.4); color: var(--success); }
+  .quiz-result.fail { background: rgba(255,82,82,0.15); border: 1px solid rgba(255,82,82,0.4); color: var(--danger); }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+
+  @media (max-width: 768px) {
+    #course-layout { grid-template-columns: 1fr; }
+    #sidebar { display: none; }
+    #content { padding: 20px; }
+    .schedule-grid { grid-template-columns: 1fr; }
+    .flip-cards-grid { grid-template-columns: 1fr 1fr; }
+    .funnel-grid { grid-template-columns: 1fr; }
+    .header-stats { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="particles"></div>
+
+<div id="app">
+
+<!-- WELCOME -->
+<div id="welcome-screen">
+  <div class="welcome-logo">🎓</div>
+  <div class="welcome-title">Курс обучения оператора</div>
+  <div class="welcome-subtitle">Добро пожаловать в команду!</div>
+  <div class="welcome-company">☀️ SunLife</div>
+  <div class="welcome-features">
+    <div class="welcome-feat"><span class="icon">📚</span>8 обучающих этапов</div>
+    <div class="welcome-feat"><span class="icon">🎬</span>Видео-инструкции</div>
+    <div class="welcome-feat"><span class="icon">✅</span>Чек-листы прогресса</div>
+    <div class="welcome-feat"><span class="icon">🎮</span>Интерактивные карточки</div>
+    <div class="welcome-feat"><span class="icon">💡</span>Пошаговые инструкции</div>
+    <div class="welcome-feat"><span class="icon">🏆</span>Сертификат по итогам</div>
+  </div>
+  <div class="info-box warning" style="max-width:550px;margin-bottom:30px">
+    <span class="icon">⚠️</span>
+    <p><strong>Важно!</strong> Все курсы и инструкции проходите только с компьютера. Телефон не подойдёт — часть функций просто не будет работать корректно.</p>
+  </div>
+  <button class="btn-start" onclick="startCourse()">🚀 Начать курс</button>
+</div>
+
+<!-- COURSE LAYOUT -->
+<div id="course-layout">
+
+  <header id="course-header">
+    <div class="header-logo">☀️ <span>Sun</span>Life</div>
+    <div class="header-progress-wrap">
+      <div class="header-progress-label" id="header-label">Прогресс обучения: 0 из 8 этапов</div>
+      <div class="header-progress-bar"><div class="header-progress-fill" id="header-bar"></div></div>
+    </div>
+    <div class="header-stats">
+      <div class="stat-item">
+        <div class="stat-num" id="stat-done">0</div>
+        <div class="stat-label">Выполнено</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" id="stat-left">8</div>
+        <div class="stat-label">Осталось</div>
+      </div>
+    </div>
+  </header>
+
+  <nav id="sidebar">
+    <div class="sidebar-title">📋 Этапы курса</div>
+    <div id="sidebar-steps"></div>
+  </nav>
+
+  <main id="content">
+
+    <!-- ====== STAGE 0 ====== -->
+    <div class="stage active" data-stage="0">
+      <div class="stage-badge">🎯 Старт</div>
+      <h1 class="stage-title">Знакомство с форматом обучения</h1>
+      <p class="stage-desc">Прежде чем начать — давайте разберёмся, как устроен курс и что вас ждёт впереди.</p>
+
+      <div class="stage-progress">
+        <div class="stage-progress-top">
+          <div class="stage-progress-label">📊 Общий прогресс курса</div>
+          <div class="stage-progress-count" id="sp-0">0 / 8 этапов</div>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="pf-0" style="width:0%"></div></div>
+      </div>
+      <div class="mini-map" id="mm-0"></div>
+
+      <div class="card">
+        <div class="card-title"><span class="card-icon">🔄</span> Как проходит обучение? <small style="color:var(--text-muted);font-size:12px;font-weight:400">— нажмите на карточки!</small></div>
+        <div class="flip-cards-grid">
+          <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+              <div class="flip-front"><div class="flip-front-icon">📖</div><div class="flip-front-text">Часть 1</div><div class="flip-hint">👆 нажмите</div></div>
+              <div class="flip-back"><div class="flip-back-text"><strong>Самостоятельная подготовка</strong><br><br>Это данный курс. Проходите в удобное для вас время, до группового созвона.</div></div>
+            </div>
+          </div>
+          <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+              <div class="flip-front"><div class="flip-front-icon">👥</div><div class="flip-front-text">Часть 2</div><div class="flip-hint">👆 нажмите</div></div>
+              <div class="flip-back"><div class="flip-back-text"><strong>Групповой созвон</strong><br><br>Проводится 2 раза в неделю. Ссылку пришлёт специалист по обучению.</div></div>
+            </div>
+          </div>
+          <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+              <div class="flip-front"><div class="flip-front-icon">❓</div><div class="flip-front-text">На созвоне</div><div class="flip-hint">👆 нажмите</div></div>
+              <div class="flip-back"><div class="flip-back-text">Разбираете вопросы, проигрываете ролевые ситуации, готовитесь к первому выходу на линию</div></div>
+            </div>
+          </div>
+          <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+              <div class="flip-front"><div class="flip-front-icon">💻</div><div class="flip-front-text">Требования</div><div class="flip-hint">👆 нажмите</div></div>
+              <div class="flip-back"><div class="flip-back-text"><strong>Только компьютер!</strong><br><br>Телефон не подходит — часть функций не будет работать.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="card-icon">📅</span> Расписание групповых созвонов</div>
+        <div class="schedule-grid">
+          <div class="schedule-card">
+            <div class="schedule-day">📅</div>
+            <div class="schedule-name">Понедельник</div>
+            <div class="schedule-time">11:00 МСК</div>
+          </div>
+          <div class="schedule-card">
+            <div class="schedule-day">📅</div>
+            <div class="schedule-name">Четверг</div>
+            <div class="schedule-time">11:00 МСК</div>
+          </div>
+        </div>
+        <div class="info-box">
+          <span class="icon">💡</span>
+          <p>Ссылку на встречу пришлёт специалист, который занимается вашим обучением!</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="card-icon">🎓</span> Интерактивный курс по скрипту</div>
+        <p style="font-size:14px;color:var(--text-muted);margin-bottom:15px;">Первым делом пройдите интерактивный курс, в котором объясняются все тонкости работы на линии:</p>
+        <a href="https://mirandaandros6-bot.github.io/operator-lid-course/" target="_blank" class="btn-video">🚀 Открыть интерактивный курс по скрипту</a>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="card-icon">✅</span> Чек-лист этапа</div>
+        <ul class="checklist">
+          <li onclick="toggleCheck(this)"><span class="check-icon">✓</span> Я знаю расписание групповых созвонов (Пн и Чт в 11:00 МСК)</li>
+          <li onclick="toggleCheck(this)"><span class="check-icon">✓</span> Я понимаю, что нужно сделать до созвона</li>
+          <li onclick="toggleCheck(this)"><span class="check-icon">✓</span> Я нахожусь за компьютером и готов двигаться дальше</li>
+          <li onclick="toggleCheck(this)"><span class="check-icon">✓</span> Я прошёл интерактивный курс по скрипту</li>
+        </ul>
+      </div>
+
+      <div class="task-checklist">
+        <div class="task-title">📋 Задания этапа</div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Ознакомиться с форматом и расписанием обучения</div></div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Пройти интерактивный курс по скрипту</div></div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Убедиться, что работаете с компьютера</div></div>
+      </div>
+
+      <div class="btn-row">
+        <a href="https://mirandaandros6-bot.github.io/operator-lid-course/" target="_blank" class="btn-video">🎬 Посмотреть обучение по скрипту</a>
+        <button class="btn-success" onclick="completeStage(0)">✅ Всё готово → Следующий этап</button>
+      </div>
+    </div>
+
+    <!-- ====== STAGE 1: YANDEX MAIL ====== -->
+    <div class="stage" data-stage="1">
+      <div class="stage-badge">📧 Этап 1</div>
+      <h1 class="stage-title">Регистрация Яндекс Почты</h1>
+      <p class="stage-desc">Яндекс Почта обязательна для получения доступа к рабочим скриптам. Никакая другая почта не подойдёт.</p>
+
+      <div class="stage-progress">
+        <div class="stage-progress-top">
+          <div class="stage-progress-label">📊 Общий прогресс курса</div>
+          <div class="stage-progress-count" id="sp-1">0 / 8 этапов</div>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="pf-1"></div></div>
+      </div>
+      <div class="mini-map" id="mm-1"></div>
+
+      <div class="info-box warning">
+        <span class="icon">⚠️</span>
+        <p><strong>Важно!</strong> Для получения доступа к скрипту нужна <strong>ЯНДЕКС ПОЧТА</strong>. Никакая другая почта (Gmail, Mail.ru и др.) не подойдёт. Пришлите почту специалисту по обучению.</p>
+      </div>
+
+      <!-- ВИДЕО ЭТАП 2 — Google Drive -->
+      <div class="card">
+        <div class="card-title"><span class="card-icon">🎬</span> Видео-инструкция: Регистрация Яндекс Почты</div>
+        <div class="video-wrap">
+          <div class="video-label">
+            <span class="dot"></span>
+            Регистрация Яндекс ID — пошаговое видео
+          </div>
+          <div class="video-frame-wrap">
+            <iframe
+              src="https://drive.google.com/file/d/1iqjxAt9FM0IQQpt1h0AI9fsfWATdpXWh/preview"
+              allow="autoplay"
+              allowfullscreen>
+            </iframe>
+          </div>
+          <div class="video-note">
+            <span>💡 Если видео не загружается — откройте напрямую</span>
+            <a href="https://drive.google.com/file/d/1iqjxAt9FM0IQQpt1h0AI9fsfWATdpXWh/view" target="_blank">▶ Открыть в Google Drive</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="card-icon">🛠️</span> Что понадобится</div>
+        <div class="flip-cards-grid">
+          <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+              <div class="flip-front"><div class="flip-front-icon">🌐</div><div class="flip-front-text">Браузер</div><div class="flip-hint">👆 нажмите</div></div>
+              <div class="flip-back"><div class="flip-back-text">Google Chrome (рекомендуется) или Microsoft Edge (встроен в Windows)</div></div>
+            </div>
+          </div>
+          <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+              <div class="flip-front"><div class="flip-front-icon">📱</div><div class="flip-front-text">Телефон</div><div class="flip-hint">👆 нажмите</div></div>
+              <div class="flip-back"><div class="flip-back-text">Номер телефона для подтверждения. Подходит SIM-карта любой страны!</div></div>
+            </div>
+          </div>
+          <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+              <div class="flip-front"><div class="flip-front-icon">🔑</div><div class="flip-front-text">Логин/Пароль</div><div class="flip-hint">👆 нажмите</div></div>
+              <div class="flip-back"><div class="flip-back-text">Придумайте заранее логин (латиница, цифры, точка, дефис) и надёжный пароль</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="card-icon">📋</span> Пошаговая инструкция</div>
+        <div class="accordion">
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span>Шаг 1 — Откройте страницу регистрации</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <p>1. Откройте любой браузер на компьютере</p>
+              <p>2. В поисковой строке введите: <strong>регистрация Яндекс ID</strong></p>
+              <p>3. Перейдите по прямой ссылке: <a href="https://id.yandex.ru" target="_blank" class="link">id.yandex.ru</a></p>
+              <div class="screenshot-wrap" style="margin-top:12px">
+                <div class="screenshot-label">📸 Страница Яндекс ID</div>
+                <img src="https://drive.google.com/thumbnail?id=1go_aHaT-fA9BZllTnBbu1oN8YP67lXce&sz=w800" alt="Страница Яндекс ID" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><span>🖼️</span><a href="https://drive.google.com/file/d/1go_aHaT-fA9BZllTnBbu1oN8YP67lXce/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span>Шаг 2 — Создайте аккаунт</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <p>1. На странице найдите кнопку <strong>«Войти в аккаунт»</strong> (правый верхний угол)</p>
+              <div class="screenshot-wrap">
+                <div class="screenshot-label">📸 Кнопка "Войти в аккаунт"</div>
+                <img src="https://drive.google.com/thumbnail?id=1UQtCDfeP06GvidJLzaHKA-XYrOcnjNLd&sz=w800" alt="Войти" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/1UQtCDfeP06GvidJLzaHKA-XYrOcnjNLd/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+              <p>2. В появившемся окне выберите кнопку <strong>«Создать ID»</strong></p>
+              <div class="screenshot-wrap">
+                <div class="screenshot-label">📸 Кнопка "Создать ID"</div>
+                <img src="https://drive.google.com/thumbnail?id=1-ldoTgJaik35LyYlkEg2ZufcJhTdKQ6f&sz=w800" alt="Создать ID" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/1-ldoTgJaik35LyYlkEg2ZufcJhTdKQ6f/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span>Шаги 3–6 — Телефон, данные, логин, пароль</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <p><strong>Шаг 3 — Номер телефона:</strong> Введите номер, подходит SIM любой страны</p>
+              <div class="screenshot-wrap">
+                <div class="screenshot-label">📸 Ввод телефона</div>
+                <img src="https://drive.google.com/thumbnail?id=1yx_ZLgw1r4tTTL_Yvk3Kh8M5_MoiJLDU&sz=w800" alt="Телефон" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/1yx_ZLgw1r4tTTL_Yvk3Kh8M5_MoiJLDU/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+              <p style="margin-top:12px"><strong>Шаг 4 — Личные данные:</strong></p>
+              <table class="custom-table" style="margin-bottom:12px">
+                <tr><th>Поле</th><th>Что вводить</th></tr>
+                <tr><td>Имя</td><td>Любое имя</td></tr>
+                <tr><td>Фамилия</td><td>Любая фамилия</td></tr>
+              </table>
+              <div class="screenshot-wrap">
+                <div class="screenshot-label">📸 Имя и фамилия</div>
+                <img src="https://drive.google.com/thumbnail?id=10sNJUSurwmddiM06AjmuULdXOZKKZ00W&sz=w800" alt="Данные" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/10sNJUSurwmddiM06AjmuULdXOZKKZ00W/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+              <p style="margin-top:12px"><strong>Шаг 5 — Логин:</strong></p>
+              <div class="info-box">
+                <span class="icon">📝</span>
+                <div><p>Только латиница (a-z), цифры (0-9), точка (.), дефис (-). Пробелы, кириллица и @ — запрещены!</p>
+                <p style="margin-top:6px">Формат: <strong>ваш_логин@yandex.ru</strong></p></div>
+              </div>
+              <div class="screenshot-wrap">
+                <div class="screenshot-label">📸 Создание логина</div>
+                <img src="https://drive.google.com/thumbnail?id=1192-iZvzhgIdeP7HqYV2oMfHJdFM8WYn&sz=w800" alt="Логин" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/1192-iZvzhgIdeP7HqYV2oMfHJdFM8WYn/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+              <p style="margin-top:12px"><strong>Шаг 6 — Пароль:</strong></p>
+              <div class="info-box warning">
+                <span class="icon">⚠️</span>
+                <p>Запишите логин и пароль в надёжное место!</p>
+              </div>
+              <div class="screenshot-wrap">
+                <div class="screenshot-label">📸 Создание пароля</div>
+                <img src="https://drive.google.com/thumbnail?id=1tUG75ELL8OMk3EQfjijy_2Yn-kwmaj_G&sz=w800" alt="Пароль" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/1tUG75ELL8OMk3EQfjijy_2Yn-kwmaj_G/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span>Шаги 7–9 — Завершение и получение адреса почты</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <p><strong>Шаг 7 — Пропустите необязательные шаги:</strong> «Хорошо», «Напомнить позже», «Нет»/«Пропустить»</p>
+              <p style="margin-top:10px"><strong>Шаг 8 — Перейдите в Яндекс Почту:</strong> иконка аккаунта (правый верх) → «Почта»</p>
+              <div class="screenshot-wrap">
+                <div class="screenshot-label">📸 Переход в почту</div>
+                <img src="https://drive.google.com/thumbnail?id=1E1HBzF-1az6F_XN_aRl1GXPfm0JTmVfO&sz=w800" alt="Почта" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/1E1HBzF-1az6F_XN_aRl1GXPfm0JTmVfO/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+              <p style="margin-top:10px"><strong>Шаг 9 — Скопируйте адрес и отправьте специалисту:</strong></p>
+              <p>Выделите адрес → Ctrl+C → отправьте специалисту по обучению</p>
+              <div class="screenshot-wrap">
+                <div class="screenshot-label">📸 Копирование адреса</div>
+                <img src="https://drive.google.com/thumbnail?id=1DwylaBXJNzzWPtHXIR6dTvVfAVWWF51-&sz=w800" alt="Адрес" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/1DwylaBXJNzzWPtHXIR6dTvVfAVWWF51-/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+              <div class="info-box success" style="margin-top:12px">
+                <span class="icon">✅</span>
+                <p>После передачи адреса — следите за входящими! Придёт приглашение для активации доступа к Яндекс Вики.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="card-icon">🧠</span> Проверь себя!</div>
+        <p style="font-size:14px;color:var(--text-muted);margin-bottom:15px">Какой символ нельзя использовать в логине Яндекс почты?</p>
+        <div class="quiz-options" id="quiz-1">
+          <div class="quiz-option"><span>A</span> Точка (.)</div>
+          <div class="quiz-option"><span>B</span> Собака (@)</div>
+          <div class="quiz-option"><span>C</span> Дефис (-)</div>
+          <div class="quiz-option"><span>D</span> Цифра (5)</div>
+        </div>
+        <div class="quiz-result ok" id="quiz-1-ok">✅ Верно! Символ @ в логине использовать нельзя — он добавляется автоматически как разделитель (@yandex.ru)</div>
+        <div class="quiz-result fail" id="quiz-1-fail">❌ Неверно. Нельзя использовать @. Логин: только латиница, цифры, точка, дефис.</div>
+      </div>
+
+      <div class="task-checklist">
+        <div class="task-title">📋 Задания этапа</div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Зарегистрировать Яндекс Почту (yandex.ru)</div></div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Записать логин и пароль в надёжное место</div></div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Скопировать адрес почты и отправить специалисту по обучению</div></div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Дождаться письма-приглашения</div></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goToStage(0)">← Назад</button>
+        <a href="https://id.yandex.ru" target="_blank" class="btn-video">🔗 Открыть Яндекс ID</a>
+        <button class="btn-success" onclick="completeStage(1)">✅ Всё готово → Следующий этап</button>
+      </div>
+    </div>
+
+    <!-- ====== STAGE 2: ACCEPT INVITATION ====== -->
+    <div class="stage" data-stage="2">
+      <div class="stage-badge">📨 Этап 2</div>
+      <h1 class="stage-title">Принимаем приглашение в организацию</h1>
+      <p class="stage-desc">После того как специалист отправит приглашение на Яндекс Почту — нужно его правильно активировать.</p>
+
+      <div class="stage-progress">
+        <div class="stage-progress-top">
+          <div class="stage-progress-label">📊 Общий прогресс курса</div>
+          <div class="stage-progress-count" id="sp-2">0 / 8 этапов</div>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="pf-2"></div></div>
+      </div>
+      <div class="mini-map" id="mm-2"></div>
+
+      <div class="info-box danger">
+        <span class="icon">⚠️</span>
+        <p><strong>Сначала прочитайте инструкцию полностью</strong> — только потом выполняйте шаги. Одна ошибка — придётся запрашивать новое приглашение.</p>
+      </div>
+
+      <!-- ВИДЕО ЭТАП 3 — Google Drive -->
+      <div class="card">
+        <div class="card-title"><span class="card-icon">🎬</span> Видео-инструкция: Активация доступа к скрипту</div>
+        <div class="video-wrap">
+          <div class="video-label">
+            <span class="dot"></span>
+            Активируем доступ к скрипту — пошаговое видео
+          </div>
+          <div class="video-frame-wrap">
+            <iframe
+              src="https://drive.google.com/file/d/1B2DwLlJX-tYJEvj-CswLJ7AbU-ECGQsX/preview"
+              allow="autoplay"
+              allowfullscreen>
+            </iframe>
+          </div>
+          <div class="video-note">
+            <span>💡 Если видео не загружается — откройте напрямую</span>
+            <a href="https://drive.google.com/file/d/1B2DwLlJX-tYJEvj-CswLJ7AbU-ECGQsX/view" target="_blank">▶ Открыть в Google Drive</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="card-icon">📋</span> Пошаговая активация приглашения</div>
+        <div class="accordion">
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span>Часть 1 — Найдите свою почту для передачи специалисту</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <ol>
+                <li>Откройте Яндекс Почту в браузере</li>
+                <li>Посмотрите в <strong>левый нижний угол</strong></li>
+                <li>Нажмите на иконку аккаунта → скопируйте адрес</li>
+                <li>Отправьте адрес специалисту</li>
+              </ol>
+              <div class="screenshot-wrap" style="margin-top:12px">
+                <div class="screenshot-label">📸 Адрес почты</div>
+                <img src="https://drive.google.com/thumbnail?id=1DwylaBXJNzzWPtHXIR6dTvVfAVWWF51-&sz=w800" alt="Адрес" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/1DwylaBXJNzzWPtHXIR6dTvVfAVWWF51-/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span>Часть 2 — Найдите письмо с приглашением</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <ol>
+                <li>Откройте Яндекс Почту</li>
+                <li>Проверьте «Входящие», затем «Мои папки»</li>
+              </ol>
+              <div class="info-box success"><span class="icon">✅</span><p>Письмо не попадёт в «Спам» — это официальное приглашение от Яндекса</p></div>
+              <div class="screenshot-wrap" style="margin-top:12px">
+                <div class="screenshot-label">📸 Письмо с приглашением</div>
+                <img src="https://drive.google.com/thumbnail?id=1Tl3qTD8NXGpzqW1E8TZ0zXC143PaYhLh&sz=w800" alt="Письмо" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/1Tl3qTD8NXGpzqW1E8TZ0zXC143PaYhLh/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span>Часть 3 — Пошаговая активация (Шаги 1–5)</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <p><strong>Шаг 1 — «Принять приглашение» в письме:</strong></p>
+              <div class="screenshot-wrap">
+                <div class="screenshot-label">📸 Кнопка "Принять приглашение"</div>
+                <img src="https://drive.google.com/thumbnail?id=1h22fYhwaGm1yWCreiuhIWskEODpBAUhP&sz=w800" alt="Принять" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/1h22fYhwaGm1yWCreiuhIWskEODpBAUhP/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+              <p style="margin-top:14px"><strong>Шаг 2 — Нажмите «Далее»:</strong></p>
+              <div class="screenshot-wrap">
+                <div class="screenshot-label">📸 Страница приглашения SunLife</div>
+                <img src="https://drive.google.com/thumbnail?id=1VrLUowbt9pc1WoA0MdU6Z4QZYtnxvbag&sz=w800" alt="Далее" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/1VrLUowbt9pc1WoA0MdU6Z4QZYtnxvbag/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+              <div class="info-box" style="margin-top:10px"><span class="icon">💡</span><p>Если несколько почт — выберите ту, на которую пришло приглашение. Нет в списке — «Войти с другим аккаунтом».</p></div>
+              <p style="margin-top:14px"><strong>Шаг 3 — Выбор страны (если появится):</strong></p>
+              <table class="custom-table">
+                <tr><th>Галочка</th><th>Что означает</th><th>Действие</th></tr>
+                <tr><td>✅ Первая</td><td>Условия использования Яндекса</td><td><strong>Обязательно поставить</strong></td></tr>
+                <tr><td>Вторая</td><td>Согласие на рекламу</td><td>Не ставить</td></tr>
+              </table>
+              <div class="screenshot-wrap" style="margin-top:10px">
+                <div class="screenshot-label">📸 Галочки согласия</div>
+                <img src="https://drive.google.com/thumbnail?id=1ZJ682cz0R1OdK4DEDOwzqPeY9QzuDSjD&sz=w800" alt="Галочки" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/1ZJ682cz0R1OdK4DEDOwzqPeY9QzuDSjD/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+              <p style="margin-top:14px"><strong>Шаг 4 — Нажмите синюю кнопку «Войти»:</strong></p>
+              <div class="screenshot-wrap">
+                <div class="screenshot-label">📸 Кнопка "Войти"</div>
+                <img src="https://drive.google.com/thumbnail?id=1aYcRx2Mk8WabWvUldWevQHVL477JTmcc&sz=w800" alt="Войти" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/1aYcRx2Mk8WabWvUldWevQHVL477JTmcc/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+              <p style="margin-top:14px"><strong>Шаг 5 — Проверьте результат:</strong></p>
+              <div class="info-box success"><span class="icon">✅</span><p>Всё верно, если открылась страница с названием <strong>"SunLife"</strong></p></div>
+              <div class="screenshot-wrap">
+                <div class="screenshot-label">📸 Главная страница SunLife</div>
+                <img src="https://drive.google.com/thumbnail?id=13Fx_Cy6YapVp13A8aZATfDd-mU-JVb4F&sz=w800" alt="SunLife" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/13Fx_Cy6YapVp13A8aZATfDd-mU-JVb4F/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span>Части 4–6 — Ссылка, доступ к скриптам, сохранение</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <div class="info-box danger"><span class="icon">⚠️</span><p><strong>Ссылка из письма — одноразовая!</strong> Только для первичной активации. Не использовать для входа в скрипты.</p></div>
+              <p style="margin-top:12px"><strong>Как получить доступ к скриптам:</strong></p>
+              <ol>
+                <li>Попросите специалиста открыть доступ к скрипту</li>
+                <li>После получения — обновите страницу (F5)</li>
+                <li>В левом меню → «Скрипты» → нажмите треугольник</li>
+              </ol>
+              <p style="margin-top:12px"><strong>Как сохранить ссылку:</strong> закладки браузера, Битрикс, мессенджер, заметки</p>
+              <div class="info-box warning" style="margin-top:10px"><span class="icon">💡</span><p>Для входа в скрипты — только прямая ссылка, не ссылка из письма!</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="card-icon">🧠</span> Запомни главное!</div>
+        <div class="flip-cards-grid">
+          <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+              <div class="flip-front"><div class="flip-front-icon">🔗</div><div class="flip-front-text">Ссылка из письма</div><div class="flip-hint">👆 нажмите</div></div>
+              <div class="flip-back"><div class="flip-back-text">Только для первичной активации. Одноразовая! Не использовать для входа в скрипты.</div></div>
+            </div>
+          </div>
+          <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+              <div class="flip-front"><div class="flip-front-icon">☑️</div><div class="flip-front-text">Галочки</div><div class="flip-hint">👆 нажмите</div></div>
+              <div class="flip-back"><div class="flip-back-text">Ставить только ПЕРВУЮ галочку (условия). Вторая — реклама, не нужна.</div></div>
+            </div>
+          </div>
+          <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+              <div class="flip-front"><div class="flip-front-icon">👤</div><div class="flip-front-text">Выбор аккаунта</div><div class="flip-hint">👆 нажмите</div></div>
+              <div class="flip-back"><div class="flip-back-text">Выбирать тот аккаунт, на который пришло письмо с приглашением!</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="task-checklist">
+        <div class="task-title">📋 Задания этапа</div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Дождаться письма-приглашения на Яндекс Почту</div></div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Принять приглашение в организацию SunLife по инструкции</div></div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Убедиться, что открылась страница SunLife</div></div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Запросить у специалиста доступ к скрипту</div></div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Сохранить прямую ссылку на скрипт</div></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goToStage(1)">← Назад</button>
+        <button class="btn-success" onclick="completeStage(2)">✅ Всё готово → Следующий этап</button>
+      </div>
+    </div>
+
+    <!-- ====== STAGE 3: SCRIPT ====== -->
+    <div class="stage" data-stage="3">
+      <div class="stage-badge">📜 Этап 3</div>
+      <h1 class="stage-title">Изучение скрипта</h1>
+      <p class="stage-desc">Получили доступ к скрипту? Теперь нужно его изучить и научиться в нём ориентироваться.</p>
+
+      <div class="stage-progress">
+        <div class="stage-progress-top">
+          <div class="stage-progress-label">📊 Общий прогресс курса</div>
+          <div class="stage-progress-count" id="sp-3">0 / 8 этапов</div>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="pf-3"></div></div>
+      </div>
+      <div class="mini-map" id="mm-3"></div>
+
+      <div class="card">
+        <div class="card-title"><span class="card-icon">📖</span> Задание: изучите скрипт</div>
+        <div class="info-box success">
+          <span class="icon">✅</span>
+          <p>После получения доступа — <strong>обязательно потыкайтесь</strong> в скрипте: нажимайте на все варианты ответов, читайте скрипт вслух полностью. Это подготовит вас к ролевой игре на созвоне!</p>
+        </div>
+        <div class="info-box warning" style="margin-top:12px">
+          <span class="icon">🎤</span>
+          <p>Читайте скрипт <strong>вслух</strong> — так быстрее запомните формулировки и почувствуете ритм разговора</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="card-icon">🗺️</span> Навигация в Яндекс Вики</div>
+        <div class="accordion">
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span>Как найти скрипт через Структуру Вики</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <ol>
+                <li><strong>Левый верхний угол</strong> → «Разделы» → «Структура Вики»</li>
+                <li>Найдите раздел «Скрипты» → нажмите треугольник</li>
+                <li>Для операторов — скрипт звонка оператора (не брокеров!)</li>
+              </ol>
+              <div class="screenshot-wrap">
+                <div class="screenshot-label">📸 Структура Вики</div>
+                <img src="https://drive.google.com/thumbnail?id=1IR0C77iLvX8RB_JxfbkafdSZBVc4kET4&sz=w800" alt="Структура Вики" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/1IR0C77iLvX8RB_JxfbkafdSZBVc4kET4/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+              <div class="screenshot-wrap" style="margin-top:10px">
+                <div class="screenshot-label">📸 Список скриптов</div>
+                <img src="https://drive.google.com/thumbnail?id=15iKv_zjeiYPfDar4ZMuX5pITQiFYhjmG&sz=w800" alt="Скрипты" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/15iKv_zjeiYPfDar4ZMuX5pITQiFYhjmG/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span>Как закрепить содержание (оглавление)</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <ol>
+                <li>Наведите мышку на <strong>синие чёрточки</strong> справа</li>
+                <li>Появится «Содержание»</li>
+                <li>Нажмите «Пин» (📌) — закрепится навсегда</li>
+              </ol>
+              <div class="screenshot-wrap">
+                <div class="screenshot-label">📸 Закреплённое содержание</div>
+                <img src="https://drive.google.com/thumbnail?id=1wooVtxG9vPQy61VnJ0MfxY95O8heYFjn&sz=w800" alt="Содержание" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/1wooVtxG9vPQy61VnJ0MfxY95O8heYFjn/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span>Как пользоваться содержанием — ситуации</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <table class="custom-table">
+                <tr><th>Ситуация</th><th>Где искать в скрипте</th></tr>
+                <tr><td>Клиент возражает в начале</td><td>Самое начало скрипта</td></tr>
+                <tr><td>Возражение в середине / вторичка / коммерция</td><td>Общий блок ВОЗРАЖЕНИЯ</td></tr>
+                <tr><td>Возражение на 3-й вопрос (бюджет)</td><td>МАЛЕНЬКИЙ БЮДЖЕТ или СКОЛЬКО КВАРТИРЫ СТОЯТ?</td></tr>
+                <tr><td>Вопросы на 4-й вопрос (способ оплаты)</td><td>Варианты ответов ниже вопроса</td></tr>
+                <tr><td>Клиент не представился</td><td>Справа от запроса имени</td></tr>
+                <tr><td>Клиент возражает в конце</td><td>Внизу прощания</td></tr>
+                <tr><td>Оформление лида</td><td>ПРИМЕР ОФОРМЛЕНИЯ КОММЕНТАРИЯ</td></tr>
+                <tr><td>Критерии качественного лида</td><td>ЧЕК-ЛИСТ ПРОВЕРКИ в конце скрипта</td></tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span>Поиск по скрипту — Ctrl+F</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <ol>
+                <li>Нажмите <strong>Ctrl + F</strong></li>
+                <li>Введите ключевое слово</li>
+                <li>Все совпадения подсветятся на странице</li>
+              </ol>
+              <div class="screenshot-wrap">
+                <div class="screenshot-label">📸 Поиск Ctrl+F</div>
+                <img src="https://drive.google.com/thumbnail?id=1JRKuzZPet8Gea2TJxDDDDVVWnw-z2-7Z&sz=w800" alt="Поиск" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/1JRKuzZPet8Gea2TJxDDDDVVWnw-z2-7Z/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="task-checklist">
+        <div class="task-title">📋 Задания этапа</div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Открыть скрипт через Структуру Вики</div></div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Закрепить содержание (оглавление) скрипта</div></div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Прочитать скрипт полностью вслух</div></div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Понажимать на все варианты в скрипте</div></div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Сохранить прямую ссылку на скрипт в закладках</div></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goToStage(2)">← Назад</button>
+        <button class="btn-success" onclick="completeStage(3)">✅ Всё готово → Следующий этап</button>
+      </div>
+    </div>
+
+    <!-- ====== STAGE 4: NAVIGATION VIDEO ====== -->
+    <div class="stage" data-stage="4">
+      <div class="stage-badge">🖥️ Этап 4</div>
+      <h1 class="stage-title">Навигация в скрипте — видео</h1>
+      <p class="stage-desc">Смотрим видео о навигации в скрипте и о том, как настроить отображение двух вкладок в одном окне.</p>
+
+      <div class="stage-progress">
+        <div class="stage-progress-top">
+          <div class="stage-progress-label">📊 Общий прогресс курса</div>
+          <div class="stage-progress-count" id="sp-4">0 / 8 этапов</div>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="pf-4"></div></div>
+      </div>
+      <div class="mini-map" id="mm-4"></div>
+
+      <!-- ВИДЕО ЭТАП 5 — Google Drive -->
+      <div class="card">
+        <div class="card-title"><span class="card-icon">🎬</span> Видео: Навигация в скрипте</div>
+        <div class="video-wrap">
+          <div class="video-label">
+            <span class="dot"></span>
+            Обучение по навигации в скрипте — пошаговое видео
+          </div>
+          <div class="video-frame-wrap">
+            <iframe
+              src="https://drive.google.com/file/d/1pWNehbCrqE8L0gfEaV5HhhDKj1jVD8J2/preview"
+              allow="autoplay"
+              allowfullscreen>
+            </iframe>
+          </div>
+          <div class="video-note">
+            <span>💡 Если видео не загружается — откройте напрямую</span>
+            <a href="https://drive.google.com/file/d/1pWNehbCrqE8L0gfEaV5HhhDKj1jVD8J2/view" target="_blank">▶ Открыть в Google Drive</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="card-icon">⚙️</span> Как работать одновременно в Битрикс и скрипте</div>
+        <div class="accordion">
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span>Способ 1 — Переключение Alt+Tab</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <ol>
+                <li>Откройте Битрикс в одной вкладке</li>
+                <li>Откройте скрипт в другой вкладке</li>
+                <li>Переключайтесь с помощью <strong>Alt + Tab</strong></li>
+              </ol>
+              <div class="info-box warning"><span class="icon">⚠️</span><p>В браузере должны быть открыты только две вкладки: Битрикс и скрипт!</p></div>
+              <div class="screenshot-wrap">
+                <div class="screenshot-label">📸 Переключение Alt+Tab</div>
+                <img src="https://drive.google.com/thumbnail?id=1xf1BGeo_heW7tsTkxvgRJywqz3vY7w8Y&sz=w800" alt="Alt+Tab" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/1xf1BGeo_heW7tsTkxvgRJywqz3vY7w8Y/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span>Способ 2 — Параллельный просмотр (разделённый экран)</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <ol>
+                <li>Правая кнопка мыши на вкладке Битрикса</li>
+                <li>«Добавить вкладку для параллельного просмотра»</li>
+                <li>Выберите вкладку со скриптом</li>
+                <li>Настройте размер полос — скрипту нужно больше места</li>
+              </ol>
+              <div class="screenshot-wrap">
+                <div class="screenshot-label">📸 Параллельный просмотр</div>
+                <img src="https://drive.google.com/thumbnail?id=1psTXM6muKbZ7Wiam24mEbuqmH-x5cBWf&sz=w800" alt="Параллельный просмотр" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/1psTXM6muKbZ7Wiam24mEbuqmH-x5cBWf/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span>Способ 3 — Программа «Записки» (Стикеры)</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <ol>
+                <li>Пуск → введите «Записки» → откройте</li>
+                <li>Во время звонка записывайте ключевую информацию</li>
+                <li>После звонка перенесите в Битрикс</li>
+              </ol>
+              <div class="info-box success"><span class="icon">💡</span>
+                <div><p>Что записывать:</p>
+                <p><strong>Имя: Светлана | 1кк | Москва | Ипотека: семейная | Бюджет: 12 млн</strong></p></div>
+              </div>
+              <div class="screenshot-wrap">
+                <div class="screenshot-label">📸 Программа Записки</div>
+                <img src="https://drive.google.com/thumbnail?id=1xz6UtLJNzUnz3zNjYWPHc_g6nhsSNJ4p&sz=w800" alt="Записки" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/1xz6UtLJNzUnz3zNjYWPHc_g6nhsSNJ4p/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="card-icon">🌐</span> Какой браузер использовать?</div>
+        <div class="flip-cards-grid">
+          <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+              <div class="flip-front"><div class="flip-front-icon">✅</div><div class="flip-front-text">Google Chrome</div><div class="flip-hint">👆 нажмите</div></div>
+              <div class="flip-back"><div class="flip-back-text"><strong>Рекомендуется!</strong><br>Быстрый, стабильный, меньше зависаний при параллельном просмотре</div></div>
+            </div>
+          </div>
+          <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+              <div class="flip-front"><div class="flip-front-icon">✅</div><div class="flip-front-text">Microsoft Edge</div><div class="flip-hint">👆 нажмите</div></div>
+              <div class="flip-back"><div class="flip-back-text"><strong>Тоже подходит!</strong><br>Уже установлен на Windows. Скачивать не нужно.</div></div>
+            </div>
+          </div>
+          <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+              <div class="flip-front"><div class="flip-front-icon">⚠️</div><div class="flip-front-text">Яндекс Браузер</div><div class="flip-hint">👆 нажмите</div></div>
+              <div class="flip-back"><div class="flip-back-text"><strong>Допускается,</strong> но может слегка зависать из-за лишних функций.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="task-checklist">
+        <div class="task-title">📋 Задания этапа</div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Посмотреть видео по навигации в скрипте</div></div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Выбрать удобный способ работы со скриптом и Битрикс</div></div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Настроить рабочее пространство (параллельный просмотр или Alt+Tab)</div></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goToStage(3)">← Назад</button>
+        <button class="btn-success" onclick="completeStage(4)">✅ Всё готово → Следующий этап</button>
+      </div>
+    </div>
+
+    <!-- ====== STAGE 5: EXAMPLE VIDEO ====== -->
+    <div class="stage" data-stage="5">
+      <div class="stage-badge">📞 Этап 5</div>
+      <h1 class="stage-title">Пример работы на линии</h1>
+      <p class="stage-desc">Смотрим видео-пример того, как проходит реальная работа оператора на линии.</p>
+
+      <div class="stage-progress">
+        <div class="stage-progress-top">
+          <div class="stage-progress-label">📊 Общий прогресс курса</div>
+          <div class="stage-progress-count" id="sp-5">0 / 8 этапов</div>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="pf-5"></div></div>
+      </div>
+      <div class="mini-map" id="mm-5"></div>
+
+      <!-- ВИДЕО ЭТАП 6 — Google Drive -->
+      <div class="card">
+        <div class="card-title"><span class="card-icon">🎬</span> Видео: Пример работы на линии</div>
+        <div class="video-wrap">
+          <div class="video-label">
+            <span class="dot"></span>
+            Пример работы оператора на линии — реальный звонок
+          </div>
+          <div class="video-frame-wrap">
+            <iframe
+              src="https://drive.google.com/file/d/1z2_7646nm0aGTNuIUjY_-q3h9DfNSMnF/preview"
+              allow="autoplay"
+              allowfullscreen>
+            </iframe>
+          </div>
+          <div class="video-note">
+            <span>💡 Если видео не загружается — откройте напрямую</span>
+            <a href="https://drive.google.com/file/d/1z2_7646nm0aGTNuIUjY_-q3h9DfNSMnF/view" target="_blank">▶ Открыть в Google Drive</a>
+          </div>
+        </div>
+        <div class="info-box" style="margin-top:15px">
+          <span class="icon">💡</span>
+          <p>Внимательно смотрите на то, как оператор:</p>
+          <ul style="margin-top:8px;padding-left:20px;font-size:13px;color:var(--text-muted)">
+            <li>Использует скрипт во время разговора</li>
+            <li>Реагирует на возражения клиента</li>
+            <li>Заполняет информацию в Битрикс</li>
+            <li>Переключается между инструментами</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="card-icon">🧠</span> Что важно заметить в видео</div>
+        <div class="flip-cards-grid">
+          <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+              <div class="flip-front"><div class="flip-front-icon">🗣️</div><div class="flip-front-text">Тон разговора</div><div class="flip-hint">👆 нажмите</div></div>
+              <div class="flip-back"><div class="flip-back-text">Уверенный, доброжелательный голос. Чёткие формулировки без запинок. Следование скрипту.</div></div>
+            </div>
+          </div>
+          <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+              <div class="flip-front"><div class="flip-front-icon">⚡</div><div class="flip-front-text">Скорость работы</div><div class="flip-hint">👆 нажмите</div></div>
+              <div class="flip-back"><div class="flip-back-text">Быстрое переключение между скриптом и Битриксом. Заметки во время разговора.</div></div>
+            </div>
+          </div>
+          <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+              <div class="flip-front"><div class="flip-front-icon">🎯</div><div class="flip-front-text">Работа с возражениями</div><div class="flip-hint">👆 нажмите</div></div>
+              <div class="flip-back"><div class="flip-back-text">Использование скрипта для отработки возражений. Не теряется при нестандартных вопросах.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="task-checklist">
+        <div class="task-title">📋 Задания этапа</div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Посмотреть видео-пример работы на линии полностью</div></div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Записать вопросы, которые возникли при просмотре</div></div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Понять общую логику работы оператора</div></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goToStage(4)">← Назад</button>
+        <button class="btn-success" onclick="completeStage(5)">✅ Всё готово → Следующий этап</button>
+      </div>
+    </div>
+
+    <!-- ====== STAGE 6: SOFTPHONE ====== -->
+    <div class="stage" data-stage="6">
+      <div class="stage-badge">☎️ Этап 6</div>
+      <h1 class="stage-title">Установка Софтфон для UIS</h1>
+      <p class="stage-desc">Устанавливаем программу для звонков — Софтфон UIS. Это основной инструмент для звонков клиентам.</p>
+
+      <div class="stage-progress">
+        <div class="stage-progress-top">
+          <div class="stage-progress-label">📊 Общий прогресс курса</div>
+          <div class="stage-progress-count" id="sp-6">0 / 8 этапов</div>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="pf-6"></div></div>
+      </div>
+      <div class="mini-map" id="mm-6"></div>
+
+      <div class="card">
+        <div class="card-title"><span class="card-icon">📋</span> Пошаговая установка Софтфон</div>
+        <div class="steps-list">
+          <div class="step-row">
+            <div class="step-circle">1</div>
+            <div class="step-content">
+              <h4>Перейдите на сайт UIS</h4>
+              <p><a href="https://www.uiscom.ru/podderzhka/nastrojka-oborudovanija/" target="_blank" class="link">uiscom.ru/podderzhka/nastrojka-oborudovanija/</a></p>
+            </div>
+          </div>
+          <div class="step-row">
+            <div class="step-circle">2</div>
+            <div class="step-content">
+              <h4>Выберите «Софтфон для клиентов UIS»</h4>
+              <p>Первый столбик слева на странице</p>
+              <div class="screenshot-wrap" style="margin-top:10px">
+                <div class="screenshot-label">📸 Выбор Софтфон</div>
+                <img src="https://drive.google.com/thumbnail?id=1Wo3btbByAf71ZrcHqV2sOsrkIpdNUT7t&sz=w800" alt="Скачать" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/1Wo3btbByAf71ZrcHqV2sOsrkIpdNUT7t/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+            </div>
+          </div>
+          <div class="step-row">
+            <div class="step-circle">3</div>
+            <div class="step-content">
+              <h4>Запустите файл установки</h4>
+              <p>Нажмите на файл в загрузках браузера или найдите в папке «Загрузки»</p>
+              <div class="screenshot-wrap" style="margin-top:10px">
+                <div class="screenshot-label">📸 Загрузки браузера</div>
+                <img src="https://drive.google.com/thumbnail?id=1x8RCS0iEA8RTci44ERTlWNUrA6ItSji3&sz=w800" alt="Загрузки" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/1x8RCS0iEA8RTci44ERTlWNUrA6ItSji3/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+            </div>
+          </div>
+          <div class="step-row">
+            <div class="step-circle">4</div>
+            <div class="step-content">
+              <h4>Разрешите изменения → «Да»</h4>
+              <div class="screenshot-wrap" style="margin-top:10px">
+                <div class="screenshot-label">📸 Разрешение изменений</div>
+                <img src="https://drive.google.com/thumbnail?id=14_yiAtp5xjNI3uMjzBQqRiss9E6gI-oS&sz=w800" alt="Разрешение" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/14_yiAtp5xjNI3uMjzBQqRiss9E6gI-oS/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+            </div>
+          </div>
+          <div class="step-row">
+            <div class="step-circle">5</div>
+            <div class="step-content">
+              <h4>Выберите «Только для меня» → «Установить»</h4>
+              <div class="screenshot-wrap" style="margin-top:10px">
+                <div class="screenshot-label">📸 Установщик</div>
+                <img src="https://drive.google.com/thumbnail?id=1N9RDQbKa2x1CRGcAMFKIZwLpeVrH1VYP&sz=w800" alt="Установщик" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/1N9RDQbKa2x1CRGcAMFKIZwLpeVrH1VYP/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+              <div class="info-box" style="margin-top:8px"><span class="icon">💡</span><p>Если Брандмауэр Windows спросит — разрешите доступ</p></div>
+            </div>
+          </div>
+          <div class="step-row">
+            <div class="step-circle">6</div>
+            <div class="step-content">
+              <h4>Нажмите «Готово» — приложение запустится</h4>
+              <div class="screenshot-wrap" style="margin-top:10px">
+                <div class="screenshot-label">📸 Завершение установки</div>
+                <img src="https://drive.google.com/thumbnail?id=1f0Eqf0uFdkPt7l7oahkzvVm6uN6rtPJj&sz=w800" alt="Готово" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/1f0Eqf0uFdkPt7l7oahkzvVm6uN6rtPJj/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+            </div>
+          </div>
+          <div class="step-row">
+            <div class="step-circle">7</div>
+            <div class="step-content">
+              <h4>Приложение готово!</h4>
+              <p>Логин и пароль — те же, что и для Битрикс. Доступы предоставит специалист в день выхода на линию!</p>
+              <div class="screenshot-wrap" style="margin-top:10px">
+                <div class="screenshot-label">📸 Приложение Софтфон</div>
+                <img src="https://drive.google.com/thumbnail?id=1h3plKWLDUS0OMuSss0gdTjEV8RpBBEU9&sz=w800" alt="Софтфон" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/1h3plKWLDUS0OMuSss0gdTjEV8RpBBEU9/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+              <div class="info-box success" style="margin-top:10px"><span class="icon">🎉</span><p><strong>Логин и пароль от Битрикс = логин и пароль от Софтфон!</strong></p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="task-checklist">
+        <div class="task-title">📋 Задания этапа</div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Перейти на сайт uiscom.ru и скачать Софтфон</div></div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Установить Софтфон (выбрать "Только для меня")</div></div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Убедиться, что приложение успешно запустилось</div></div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Доступы (логин/пароль) получить у специалиста в день выхода на линию</div></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goToStage(5)">← Назад</button>
+        <a href="https://www.uiscom.ru/podderzhka/nastrojka-oborudovanija/" target="_blank" class="btn-video">🔗 Сайт UIS</a>
+        <button class="btn-success" onclick="completeStage(6)">✅ Всё готово → Следующий этап</button>
+      </div>
+    </div>
+
+    <!-- ====== STAGE 7: BITRIX ====== -->
+    <div class="stage" data-stage="7">
+      <div class="stage-badge">💼 Этап 7</div>
+      <h1 class="stage-title">Работа с Битрикс</h1>
+      <p class="stage-desc">Изучаем работу в Битрикс: как перемещать лиды по воронке, заполнять карточки и оформлять качественные лиды.</p>
+
+      <div class="stage-progress">
+        <div class="stage-progress-top">
+          <div class="stage-progress-label">📊 Общий прогресс курса</div>
+          <div class="stage-progress-count" id="sp-7">0 / 8 этапов</div>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="pf-7"></div></div>
+      </div>
+      <div class="mini-map" id="mm-7"></div>
+
+      <!-- ВИДЕО ЭТАП 8 — Google Drive -->
+      <div class="card">
+        <div class="card-title"><span class="card-icon">🎬</span> Видео: Перемещение лидов по воронке в Битрикс</div>
+        <div class="video-wrap">
+          <div class="video-label">
+            <span class="dot"></span>
+            Как перемещать лид по воронке — пошаговое видео
+          </div>
+          <div class="video-frame-wrap">
+            <iframe
+              src="https://drive.google.com/file/d/1jA8A_ww8jRYCCiaEWVT0KtVnk--w6JNX/preview"
+              allow="autoplay"
+              allowfullscreen>
+            </iframe>
+          </div>
+          <div class="video-note">
+            <span>💡 Если видео не загружается — откройте напрямую</span>
+            <a href="https://drive.google.com/file/d/1jA8A_ww8jRYCCiaEWVT0KtVnk--w6JNX/view" target="_blank">▶ Открыть в Google Drive</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="card-icon">🔑</span> Вход в Битрикс и начало работы</div>
+        <div class="accordion">
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span>Как войти и найти лиды</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <ol>
+                <li>Перейдите в Битрикс по ссылке от специалиста</li>
+                <li>Введите логин и пароль (выдадут в день выхода)</li>
+                <li>В левом меню → <strong>CRM</strong></li>
+                <li>Все новые лиды — в столбце <strong>«Новый лид»</strong></li>
+              </ol>
+              <div class="screenshot-wrap">
+                <div class="screenshot-label">📸 Раздел CRM</div>
+                <img src="https://drive.google.com/thumbnail?id=10zUPQgtVpkBGv3MY1ramJYFO8RuwHlNa&sz=w800" alt="CRM" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/10zUPQgtVpkBGv3MY1ramJYFO8RuwHlNa/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+              <div class="screenshot-wrap" style="margin-top:10px">
+                <div class="screenshot-label">📸 Воронка "Новый лид"</div>
+                <img src="https://drive.google.com/thumbnail?id=1vY0cBYQe4FhmcCide-yqVik1cyfrwBqt&sz=w800" alt="Новый лид" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/1vY0cBYQe4FhmcCide-yqVik1cyfrwBqt/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span>Как открыть карточку и позвонить</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <ol>
+                <li>Нажмите на <strong>SUN</strong> — откроется карточка</li>
+                <li>Внутри нажмите на <strong>номер телефона</strong></li>
+                <li>Звонок пройдёт через программу СофтФон (UIS)</li>
+              </ol>
+              <div class="screenshot-wrap">
+                <div class="screenshot-label">📸 Карточка лида</div>
+                <img src="https://drive.google.com/thumbnail?id=1bM1tTFeEqJuemaNpLE5oVwh87ZzJXheu&sz=w800" alt="Карточка" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/1bM1tTFeEqJuemaNpLE5oVwh87ZzJXheu/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="card-icon">📊</span> Воронки — нажмите на карточку для деталей!</div>
+        <div class="funnel-grid">
+          <div class="funnel-card blue" onclick="this.style.transform=this.style.transform?'':'translateY(-3px)'">
+            <div class="funnel-card-title">🔵 Брокер</div>
+            <div class="funnel-card-body">Клиент — специалист в сфере недвижимости: брокер, агент, риэлтор, представитель застройщика</div>
+          </div>
+          <div class="funnel-card yellow" onclick="this.style.transform=this.style.transform?'':'translateY(-3px)'">
+            <div class="funnel-card-title">🟡 Недозвон</div>
+            <div class="funnel-card-body">Не взял трубку / Автоответчик / Сбросил после приветствия без ответа</div>
+          </div>
+          <div class="funnel-card orange" onclick="this.style.transform=this.style.transform?'':'translateY(-3px)'">
+            <div class="funnel-card-title">🟠 В поиске (Оператор)</div>
+            <div class="funnel-card-body">Покупка не прямо сейчас: запланирована на будущее, нет первоначального взноса, попросил перезвонить</div>
+          </div>
+          <div class="funnel-card green" onclick="this.style.transform=this.style.transform?'':'translateY(-3px)'">
+            <div class="funnel-card-title">🟢 Качественный лид</div>
+            <div class="funnel-card-body">Готов к покупке сейчас, охотно общается, готов говорить со специалистом</div>
+          </div>
+          <div class="funnel-card red" onclick="this.style.transform=this.style.transform?'':'translateY(-3px)'">
+            <div class="funnel-card-title">⛔ Завершить обработку</div>
+            <div class="funnel-card-body">Квартира не нужна, случайно попал на рекламу, уже купил, после 2–3 недозвонов</div>
+          </div>
+        </div>
+        <div class="info-box" style="margin-top:10px">
+          <span class="icon">💡</span>
+          <p>При «Завершить обработку лида» → выбрать «Некачественный лид» → нажать «Сохранить»</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="card-icon">🌟</span> Как оформить качественный лид</div>
+        <div class="accordion">
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span>Шаг 1 — Уточните информацию по скрипту</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <table class="custom-table">
+                <tr><th>Вопрос оператора</th><th>Что записать</th></tr>
+                <tr><td>В каком районе рассматриваете?</td><td>Любой ответ клиента</td></tr>
+                <tr><td>Студия, 1кк, 2кк или 3кк?</td><td>Количество комнат или метраж</td></tr>
+                <tr><td>На какую стоимость рассчитываете?</td><td>Точный бюджет</td></tr>
+                <tr><td>Ипотека, рассрочка или собственные?</td><td>Способ оплаты, первоначальный взнос</td></tr>
+              </table>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span>Шаг 2 — Внесите в поле «Комментарий»</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <p>Найдите поле «Комментарий» в карточке лида и запишите всю информацию, затем нажмите <strong>«Отправить»</strong></p>
+              <div class="screenshot-wrap">
+                <div class="screenshot-label">📸 Пример комментария</div>
+                <img src="https://drive.google.com/thumbnail?id=1XqLbNf-DyqjFXjFWBy00sDmw1hnj_6Rm&sz=w800" alt="Комментарий" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/1XqLbNf-DyqjFXjFWBy00sDmw1hnj_6Rm/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span>Шаг 3 — Переименуйте лид</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <ol>
+                <li>Нажмите на иконку карандаша рядом с «SUN»</li>
+                <li>Удалите текущее название</li>
+                <li>Напишите: <strong>Имя клиента + пробел + КЦ</strong></li>
+                <li>Пример: <strong>«Светлана КЦ»</strong></li>
+                <li>Нажмите на галочку — сохранится</li>
+              </ol>
+              <div class="screenshot-wrap">
+                <div class="screenshot-label">📸 Переименование лида</div>
+                <img src="https://drive.google.com/thumbnail?id=1ClrNXI6Ab7JfQnXRd3tLVk1hPhKwHR9A&sz=w800" alt="Переименование" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="screenshot-fallback"><a href="https://drive.google.com/file/d/1ClrNXI6Ab7JfQnXRd3tLVk1hPhKwHR9A/view" target="_blank" class="btn-video" style="font-size:12px">Открыть скрин</a></div>
+              </div>
+              <div class="info-box" style="margin-top:10px"><span class="icon">💡</span><p>КЦ = Колл-центр. Пометка показывает, что лид обработан оператором.</p></div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span>Шаг 4 — Сохраните ссылку на карточку</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <p>Скопируйте URL из адресной строки браузера и сохраните — отправьте ответственному за лиды.</p>
+              <div class="info-box success"><span class="icon">✅</span><p>Работа с карточкой завершена — специалист получит её самостоятельно. Переходите к следующему лиду!</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="card-icon">🧠</span> Проверь себя!</div>
+        <p style="font-size:14px;color:var(--text-muted);margin-bottom:15px">Клиент сказал, что покупку планирует через 3 месяца и копит первоначальный взнос. В какую воронку?</p>
+        <div class="quiz-options" id="quiz-2">
+          <div class="quiz-option"><span>A</span> 🔵 Брокер</div>
+          <div class="quiz-option"><span>B</span> 🟢 Качественный лид (В поиске)</div>
+          <div class="quiz-option"><span>C</span> 🟠 В поиске (Оператор)</div>
+          <div class="quiz-option"><span>D</span> ⛔ Завершить обработку</div>
+        </div>
+        <div class="quiz-result ok" id="quiz-2-ok">✅ Верно! «В поиске (Оператор)» — покупка запланирована на будущее, нет первоначального взноса сейчас.</div>
+        <div class="quiz-result fail" id="quiz-2-fail">❌ Неверно. Правильный ответ: «В поиске (Оператор)» — клиент планирует покупку, но не прямо сейчас.</div>
+      </div>
+
+      <div class="task-checklist">
+        <div class="task-title">📋 Задания этапа</div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Посмотреть видео по работе с Битрикс</div></div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Изучить все 5 воронок и когда использовать каждую</div></div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Знать как оформить качественный лид (4 шага)</div></div>
+        <div class="task-item" onclick="toggleTask(this)"><div class="task-checkbox">✓</div><div class="task-text">Помнить формат переименования: "Имя КЦ"</div></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goToStage(6)">← Назад</button>
+        <button class="btn-success" onclick="completeStage(7)">✅ Всё готово → Завершить курс!</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- COMPLETION POPUP -->
+<div id="completion-popup">
+  <div class="popup-box">
+    <div class="popup-emoji" id="popup-emoji">🎉</div>
+    <div class="popup-title" id="popup-title">Этап завершён!</div>
+    <div class="popup-text" id="popup-text">Отличная работа!</div>
+    <button class="btn-success" onclick="closePopup()">➡️ Продолжить</button>
+  </div>
+</div>
+
+<!-- FINAL SCREEN -->
+<div id="final-screen">
+  <div class="final-trophy">🏆</div>
+  <div class="final-title">Вы завершили курс!</div>
+  <p style="font-size:18px;color:var(--text-muted);margin-bottom:15px;max-width:600px;line-height:1.7">
+    Поздравляем! Вы успешно прошли все 8 этапов обучения оператора SunLife.<br>
+    Теперь вы готовы к групповому созвону!
+  </p>
+  <div class="info-box success" style="max-width:600px;margin-bottom:30px">
+    <span class="icon">📅</span>
+    <p>Следующий шаг — Групповой созвон:<br>
+    <strong>Понедельник или Четверг в 11:00 МСК</strong><br>
+    Ссылку пришлёт специалист по обучению</p>
+  </div>
+  <div style="display:flex;gap:15px;flex-wrap:wrap;justify-content:center">
+    <button class="btn-success" onclick="showCourse()">📖 Вернуться к курсу</button>
+    <a href="https://mirandaandros6-bot.github.io/operator-lid-course/" target="_blank" class="btn-primary">🎓 Курс по скрипту</a>
+  </div>
+</div>
+
+</div>
+
+<script>
+const stages = [
+  { name: 'Знакомство с форматом', icon: '🎯', short: 'Формат' },
+  { name: 'Регистрация Яндекс Почты', icon: '📧', short: 'Яндекс' },
+  { name: 'Активация приглашения', icon: '📨', short: 'Приглашение' },
+  { name: 'Изучение скрипта', icon: '📜', short: 'Скрипт' },
+  { name: 'Навигация в скрипте', icon: '🖥️', short: 'Навигация' },
+  { name: 'Пример работы на линии', icon: '📞', short: 'Пример' },
+  { name: 'Установка Софтфон', icon: '☎️', short: 'Софтфон' },
+  { name: 'Работа с Битрикс', icon: '💼', short: 'Битрикс' },
+];
+
+let currentStage = 0;
+let completed = new Array(8).fill(false);
+
+function initParticles() {
+  const c = document.getElementById('particles');
+  for (let i = 0; i < 15; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 80 + 20;
+    p.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;animation-duration:${Math.random()*20+15}s;animation-delay:${Math.random()*20}s;opacity:${Math.random()*0.3}`;
+    c.appendChild(p);
+  }
+}
+
+function buildSidebar() {
+  const el = document.getElementById('sidebar-steps');
+  el.innerHTML = stages.map((s, i) => `
+    <div class="step-item${i===currentStage?' active':''}${completed[i]?' completed':''}"
+         id="sidebar-${i}" onclick="goToStage(${i})">
+      <div class="step-num">${completed[i]?'✓':(i+1)}</div>
+      <div class="step-info">
+        <div class="step-name">${s.icon} ${s.name}</div>
+        <div class="step-status">${completed[i]?'Выполнено':'Этап '+(i+1)+' из '+stages.length}</div>
+      </div>
+      ${completed[i]?'<span class="step-check">✅</span>':''}
+    </div>
+  `).join('');
+}
+
+function buildMiniMaps() {
+  for (let s = 0; s <= 7; s++) {
+    const el = document.getElementById('mm-' + s);
+    if (!el) continue;
+    el.innerHTML = stages.map((st, i) => `
+      <div class="mini-dot ${i===s?'active':''} ${completed[i]?'completed':''}"
+           data-label="${st.short}" onclick="goToStage(${i})"></div>
+    `).join('');
+  }
+}
+
+function updateProgress() {
+  const done = completed.filter(Boolean).length;
+  const pct = (done / 8) * 100;
+  document.getElementById('header-bar').style.width = pct + '%';
+  document.getElementById('header-label').textContent = `Прогресс: ${done} из 8 этапов`;
+  document.getElementById('stat-done').textContent = done;
+  document.getElementById('stat-left').textContent = 8 - done;
+  for (let i = 0; i <= 7; i++) {
+    const sp = document.getElementById('sp-' + i);
+    const pf = document.getElementById('pf-' + i);
+    if (sp) sp.textContent = done + ' / 8 этапов';
+    if (pf) pf.style.width = pct + '%';
+  }
+}
+
+function startCourse() {
+  document.getElementById('welcome-screen').style.display = 'none';
+  document.getElementById('final-screen').classList.remove('show');
+  document.getElementById('course-layout').classList.add('active');
+  buildSidebar();
+  buildMiniMaps();
+  updateProgress();
+  goToStage(0);
+}
+
+function showCourse() {
+  document.getElementById('final-screen').classList.remove('show');
+  document.getElementById('course-layout').classList.add('active');
+  goToStage(0);
+}
+
+function goToStage(n) {
+  if (n < 0 || n > 7) return;
+  document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
+  const target = document.querySelector(`.stage[data-stage="${n}"]`);
+  if (target) target.classList.add('active');
+  currentStage = n;
+  buildSidebar();
+  buildMiniMaps();
+  document.getElementById('content').scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function completeStage(n) {
+  completed[n] = true;
+  updateProgress();
+  buildSidebar();
+  buildMiniMaps();
+
+  const msgs = [
+    { emoji: '🎉', title: 'Отличный старт!', text: 'Вы познакомились с форматом. Переходим к регистрации Яндекс Почты!' },
+    { emoji: '📧', title: 'Яндекс Почта готова!', text: 'Отлично! Теперь принимаем приглашение в организацию SunLife.' },
+    { emoji: '🔓', title: 'Доступ активирован!', text: 'Прекрасно! Теперь изучаем скрипт.' },
+    { emoji: '📜', title: 'Скрипт изучен!', text: 'Отличная работа! Смотрим видео по навигации в скрипте.' },
+    { emoji: '🖥️', title: 'Навигация освоена!', text: 'Супер! Смотрим пример реальной работы на линии.' },
+    { emoji: '👀', title: 'Пример просмотрен!', text: 'Прекрасно! Устанавливаем Софтфон для звонков.' },
+    { emoji: '☎️', title: 'Софтфон установлен!', text: 'Превосходно! Последний этап — изучаем Битрикс.' },
+    { emoji: '🏆', title: 'Курс завершён!', text: 'Вы прошли все этапы! Поздравляем! Вы готовы к групповому созвону!' },
+  ];
+
+  const m = msgs[n];
+  document.getElementById('popup-emoji').textContent = m.emoji;
+  document.getElementById('popup-title').textContent = m.title;
+  document.getElementById('popup-text').textContent = m.text;
+  const popup = document.getElementById('completion-popup');
+  popup._final = (n === 7);
+  popup._next = n + 1;
+  popup.classList.add('show');
+}
+
+function closePopup() {
+  const popup = document.getElementById('completion-popup');
+  popup.classList.remove('show');
+  if (popup._final) {
+    document.getElementById('course-layout').classList.remove('active');
+    document.getElementById('final-screen').classList.add('show');
+  } else {
+    goToStage(popup._next);
+  }
+}
+
+function toggleAccordion(header) {
+  const isOpen = header.classList.contains('open');
+  header.closest('.accordion').querySelectorAll('.accordion-header.open').forEach(h => {
+    h.classList.remove('open');
+    h.nextElementSibling.classList.remove('open');
+  });
+  if (!isOpen) {
+    header.classList.add('open');
+    header.nextElementSibling.classList.add('open');
+  }
+}
+
+function toggleCheck(el) { el.classList.toggle('done'); }
+function toggleTask(el) { el.classList.toggle('done'); }
+
+document.getElementById('completion-popup').addEventListener('click', function(e) {
+  if (e.target === this) closePopup();
+});
+
+// Квизы
+(function(){
+  function setupQuiz(quizId, correctIndex) {
+    const quiz = document.getElementById(quizId);
+    if (!quiz) return;
+    const opts = quiz.querySelectorAll('.quiz-option');
+    opts.forEach((opt, i) => {
+      opt.addEventListener('click', function() {
+        if (opt.classList.contains('disabled')) return;
+        opts.forEach(o => o.classList.add('disabled'));
+        if (i === correctIndex) {
+          opt.classList.add('correct');
+          document.getElementById(quizId+'-ok').classList.add('show');
+        } else {
+          opt.classList.add('wrong');
+          opts[correctIndex].classList.remove('disabled');
+          opts[correctIndex].classList.add('correct');
+          document.getElementById(quizId+'-fail').classList.add('show');
+        }
+      });
+    });
+  }
+  setupQuiz('quiz-1', 1);
+  setupQuiz('quiz-2', 2);
+})();
+
+initParticles();
+</script>
+</body>
+</html>
